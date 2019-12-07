@@ -1,4 +1,4 @@
-// Binary Search Tree implimentation in C
+// AVL tree implementation 
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -15,7 +15,6 @@ typedef struct Node
 	int height;
 }Node;
 
-// A utility function to get the
 // height of the tree
 
 int height(Node *N)
@@ -25,8 +24,7 @@ int height(Node *N)
 	return N->height;
 }
 
-// A utility function to get maximum
-// of two integers
+// Maximum of two integers
 int max(int a, int b)
 {
 	if(a>b)
@@ -35,24 +33,18 @@ int max(int a, int b)
 		return b;
 
 }
-
-/* Helper function that allocates a
-new node with the given key and
-NULL left and right pointers. */
+//Function which creatres a new node with the given key 
+//as an argument and returns the pointer to the new node.
 Node* newNode(int key)
 {
 	Node* node = (Node *)malloc(sizeof(Node));
 	node->key = key;
 	node->left = NULL;
 	node->right = NULL;
-	node->height = 1; // new node is initially
-					// added at leaf
+	node->height = 1; //height is 1, because it is initially added to the leaf
 	return(node);
 }
-
-// A utility function to right
-// rotate subtree rooted with y
-// See the diagram given above.
+//right rotation
 Node *rightRotate(Node *y)
 {
 	Node *x = y->left;
@@ -72,9 +64,7 @@ Node *rightRotate(Node *y)
 	return x;
 }
 
-// A utility function to left
-// rotate subtree rooted with x
-// See the diagram given above.
+// left rotation
 Node *leftRotate(Node *x)
 {
 	Node *y = x->right;
@@ -94,17 +84,17 @@ Node *leftRotate(Node *x)
 	return y;
 }
 
-// Get Balance factor of node N
-int getBalance(Node *N)
+// Height difference between the two subtrees(left-right)
+int h_diff(Node *N)
 {
 	if (N == NULL)
 		return 0;
 	return(height(N->left) - height(N->right));
 }
 
-// Recursive function to insert a key
+// function to insert a key
 // in the subtree rooted with node and
-// returns the new root of the subtree.
+// returns the n ew root of the subtree.
 Node* insert(Node* node, int key)
 {
 	/* 1. Perform the normal BST insertion */
@@ -125,27 +115,27 @@ Node* insert(Node* node, int key)
 	/* 3. Get the balance factor of this ancestor
 		node to check whether this node became
 		unbalanced */
-	int balance = getBalance(node);
+	int balance = h_diff(node);
 
 	// If this node becomes unbalanced, then
 	// there are 4 cases
 
-	// Left Left Case
+	// case 1
 	if (balance > 1 && key < node->left->key)
 		return rightRotate(node);
 
-	// Right Right Case
+	// Case 2
 	if (balance < -1 && key > node->right->key)
 		return leftRotate(node);
 
-	// Left Right Case
+	// Case 3
 	if (balance > 1 && key > node->left->key)
 	{
 		node->left = leftRotate(node->left);
 		return rightRotate(node);
 	}
 
-	// Right Left Case
+	// Case 4
 	if (balance < -1 && key < node->right->key)
 	{
 		node->right = rightRotate(node->right);
@@ -170,7 +160,7 @@ Node * minValueNode(Node* node)
 Node* deleteNode(Node* root, int key)
 {
 
-    // STEP 1: PERFORM STANDARD BST DELETE
+    // STEP 1: We first simply perform the BST delete
     if (root == NULL)
         return root;
 
@@ -214,11 +204,10 @@ Node* deleteNode(Node* root, int key)
             // successor (smallest in the right subtree)
             Node* temp = minValueNode(root->right);
 
-            // Copy the inorder successor's
-            // data to this node
+            
             root->key = temp->key;
 
-            // Delete the inorder successor
+            
             root->right = deleteNode(root->right,
                                      temp->key);
         }
@@ -233,20 +222,20 @@ Node* deleteNode(Node* root, int key)
     root->height = 1 + max(height(root->left),
                            height(root->right));
 
-    // STEP 3: GET THE BALANCE FACTOR OF
+    // STEP 3: GET THE HEIGHT DIFFERENCE OF
     // THIS NODE (to check whether this
     // node became unbalanced)
-    int balance = getBalance(root);
+    int balance = h_diff(root);
 
     // If this node becomes unbalanced,
     // then there are 4 cases
 
-    // Left Left Case
+    // Case 1
     if (balance > 1 &&
         getBalance(root->left) >= 0)
         return rightRotate(root);
 
-    // Left Right Case
+    // Case 2
     if (balance > 1 &&
         getBalance(root->left) < 0)
     {
@@ -254,12 +243,12 @@ Node* deleteNode(Node* root, int key)
         return rightRotate(root);
     }
 
-    // Right Right Case
+    // Case 3
     if (balance < -1 &&
         getBalance(root->right) <= 0)
         return leftRotate(root);
 
-    // Right Left Case
+    // Case 4
     if (balance < -1 &&
         getBalance(root->right) > 0)
     {
@@ -276,7 +265,7 @@ void inOrder(Node *root)
 	if(root != NULL)
 	{
 		inOrder(root->left);
-		printf("(%d @ %p left:%p right:%p)\n", root->key, root,root->left,root->right);
+		printf("(Node: (%d @ %p) left child:(%d @ %p) right child:(%d @ %p))\n", root->key, root,root->left->key,root->left,root->right->key,root->right);
 		inOrder(root->right);
 	}
 }
@@ -310,6 +299,7 @@ int main(void)
 	inOrder(root);
 	return 0;
 }
-
-
+//Name: Sanyam Gupta
+//Roll number: 17089
+//Course: MTH-307
 
