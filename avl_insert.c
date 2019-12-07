@@ -1,4 +1,4 @@
-// Binary Search Tree implimentation in C
+// AVL tree implementation for insertion
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -15,7 +15,7 @@ typedef struct Node
 	int height;
 }Node;
 
-// A utility function to get the
+
 // height of the tree
 
 int height(Node *N)
@@ -25,8 +25,8 @@ int height(Node *N)
 	return N->height;
 }
 
-// A utility function to get maximum
-// of two integers
+// 
+// Maximum of two integers
 int max(int a, int b)
 {
 	if(a>b)
@@ -36,9 +36,8 @@ int max(int a, int b)
 
 }
 
-/* Helper function that allocates a
-new node with the given key and
-NULL left and right pointers. */
+// Function to create a new node with the given 
+//key as an argument and returns the pointer to the new node.
 Node* newNode(int key)
 {
 	Node* node = (Node *)malloc(sizeof(Node));
@@ -50,9 +49,7 @@ Node* newNode(int key)
 	return(node);
 }
 
-// A utility function to right
-// rotate subtree rooted with y
-// See the diagram given above.
+// right rotation
 Node *rightRotate(Node *y)
 {
 	Node *x = y->left;
@@ -72,9 +69,7 @@ Node *rightRotate(Node *y)
 	return x;
 }
 
-// A utility function to left
-// rotate subtree rooted with x
-// See the diagram given above.
+// left rotation
 Node *leftRotate(Node *x)
 {
 	Node *y = x->right;
@@ -94,8 +89,8 @@ Node *leftRotate(Node *x)
 	return y;
 }
 
-// Get Balance factor of node N
-int getBalance(Node *N)
+// Height difference of the left and right subtree of the node N.
+int h_diff(Node *N)
 {
 	if (N == NULL)
 		return 0;
@@ -122,30 +117,28 @@ Node* insert(Node* node, int key)
 	node->height = 1 + max(height(node->left),
 						height(node->right));
 
-	/* 3. Get the balance factor of this ancestor
-		node to check whether this node became
-		unbalanced */
-	int balance = getBalance(node);
+	/* 3. get the height difference */
+	int balance = h_diff(node);
 
 	// If this node becomes unbalanced, then
 	// there are 4 cases
 
-	// Left Left Case
+	// Case 1
 	if (balance > 1 && key < node->left->key)
 		return rightRotate(node);
 
-	// Right Right Case
+	// Case 2
 	if (balance < -1 && key > node->right->key)
 		return leftRotate(node);
 
-	// Left Right Case
+	// Case 3
 	if (balance > 1 && key > node->left->key)
 	{
 		node->left = leftRotate(node->left);
 		return rightRotate(node);
 	}
 
-	// Right Left Case
+	// Case 4
 	if (balance < -1 && key < node->right->key)
 	{
 		node->right = rightRotate(node->right);
@@ -156,10 +149,8 @@ Node* insert(Node* node, int key)
 	return node;
 }
 
-// A utility function to print preorder
-// traversal of the tree.
-// The function also prints height
-// of every node
+// function to print inorder
+
 void inOrder(Node *root)
 {
 	if(root != NULL)
@@ -170,8 +161,7 @@ void inOrder(Node *root)
 	}
 }
 
-// Driver Code
-int main()
+int main(void)
 {
 	int key;
 	Node *root = NULL;
@@ -184,8 +174,7 @@ int main()
 			if(key == 0)
 				break;
 
-			/* Constructing tree given in
-			the above figure */
+			
 			root = insert(root, key);
 
 
@@ -196,4 +185,7 @@ int main()
 	return 0;
 }
 
+//Name: Sanyam Gupta
+//Roll number: 17089
+//Course: MTH-307
 
